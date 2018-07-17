@@ -8,21 +8,25 @@ use serde_json::Value;
 // Write the Docopt usage string.
 const USAGE: &'static str = "
 logs2json is a mongod server log parser that coerces individual lines of server log to json
-and pretty prints into one of the specified forms i.e. json or table.
+and pretty prints into one of the specified forms i.e. json or table. It can also print in its
+original messy form with --original/-o flag.
 
 Usage:
   logs2json (-j | --json)
   logs2json (-t | --table)
+  logs2json (-o | --original)
   logs2json (-h | --help)
 
 Options:
-  -h --help   show this help screen.
-  -j --json   pretty print to json format.
-  -t --table  pretty print to tabular format.
+  -h --help       show this help screen.
+  -j --json       pretty print to json format.
+  -t --table      pretty print to tabular format.
+  -o --original   original raw messy format.
 ";
 
 const JSON: &'static str = "json";
 const TABLE: &'static str = "table";
+const RAW: &'static str = "raw";
 
 const C_MIN_LENGTH: usize = 10;
 const CTX_MIN_LENGTH: usize = 28;
@@ -55,6 +59,8 @@ fn parse_args(args: &docopt::ArgvMap) -> &'static str {
     parsed = JSON;
   } else if args.get_bool("-t") {
     parsed = TABLE;
+  } else if args.get_bool("-o") {
+    parsed = RAW;
   }
 
   return parsed;
@@ -85,5 +91,7 @@ fn pretty_print(line: &String, mode: &str) {
     println!("{0:1$} | {2:3$} | {4:5$} | {6:7$} | {8:9$} | {10:11$}",
       c, C_MIN_LENGTH, ctx, CTX_MIN_LENGTH, s, S_MIN_LENGTH,
       t, T_MIN_LENGTH, msg, MSG_MIN_LENGTH, base, BASE_MIN_LENGTH);
+  } else if mode == RAW {
+    println!("{}", serde_json::to_string(&json_line).unwrap());
   }
 }
