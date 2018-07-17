@@ -1,6 +1,7 @@
 extern crate docopt;
 
 use std::io::{self, BufRead};
+use std::io::Error;
 use docopt::Docopt;
 
 // Write the Docopt usage string.
@@ -19,16 +20,36 @@ Options:
   -t --table  pretty print to tabular format.
 ";
 
+const JSON: &'static str = "json";
+const TABLE: &'static str = "table";
+
 fn main() {
   let args = Docopt::new(USAGE)
                     .and_then(|dopt | dopt.parse())
                     .unwrap_or_else(|e| e.exit());
 
-  println!("{:?}", args);
+  let mode = parse_args(&args);
 
   let stdin = io::stdin();
 
   for line in stdin.lock().lines() {
-    println!("{}", line.unwrap());
+    pretty_print(line, mode);
   }
+}
+
+fn parse_args(args: &docopt::ArgvMap) -> &'static str {
+  let mut parsed = JSON;
+
+  if args.get_bool("-j") {
+    parsed = JSON;
+  } else if args.get_bool("-t") {
+    parsed = TABLE;
+  }
+
+  return parsed;
+}
+
+fn pretty_print(line: Result<String, Error>, mode: &str) {
+  println!("{}", line.unwrap());
+  println!("{}", mode);
 }
