@@ -1,8 +1,10 @@
 extern crate docopt;
+extern crate serde_json;
 
 use std::io::{self, BufRead};
 use std::io::Error;
 use docopt::Docopt;
+use serde_json::Value;
 
 // Write the Docopt usage string.
 const USAGE: &'static str = "
@@ -33,7 +35,7 @@ fn main() {
   let stdin = io::stdin();
 
   for line in stdin.lock().lines() {
-    pretty_print(line, mode);
+    pretty_print(&line.unwrap(), mode);
   }
 }
 
@@ -49,7 +51,9 @@ fn parse_args(args: &docopt::ArgvMap) -> &'static str {
   return parsed;
 }
 
-fn pretty_print(line: Result<String, Error>, mode: &str) {
-  println!("{}", line.unwrap());
-  println!("{}", mode);
+fn pretty_print(line: &String, mode: &str) {
+  if (mode == JSON) {
+   let jsonLine: Value = serde_json::from_str(line).unwrap();
+   println!("{}", serde_json::to_string_pretty(&jsonLine).unwrap());
+  }
 }

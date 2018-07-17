@@ -5,5 +5,6 @@ authors = ["satyasinha <satyendra.n.sinha@gmail.com>"]
 
 [dependencies]
 docopt = "1"
-serde = "1.0" # if you're using `derive(Deserialize)`
-serde_derive = "1.0" # if you're using `derive(Deserialize)`
+serde = "1.0"
+serde_derive = "1.0"
+serde_json = "1.0"
