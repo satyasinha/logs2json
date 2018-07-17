@@ -1,0 +1,9 @@
+[package]
+name = "logs2json"
+version = "0.1.0"
+authors = ["satyasinha <satyendra.n.sinha@gmail.com>"]
+
+[dependencies]
+docopt = "1"
+serde = "1.0" # if you're using `derive(Deserialize)`
+serde_derive = "1.0" # if you're using `derive(Deserialize)`
