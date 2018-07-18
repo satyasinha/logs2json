@@ -144,7 +144,13 @@ fn pretty_print(line: &String, mode: &str) {
     let mut message: String = "".to_string();
 
     for msg in json_line["msg"].as_array().unwrap() {
-      message.push_str(&serde_json::to_string(msg).unwrap());
+      let mut pretty_msg: &str  = "";
+
+      if msg.is_string() {
+        message.push_str(msg.as_str().unwrap());
+      } else {
+        message.push_str(&serde_json::to_string(msg).unwrap());
+      };
     }
 
     // TODO: lengths are hard-coded here, very naughty
